@@ -65,6 +65,8 @@ module.exports.viewDashboard = async function (req, res) {
     return res.end();
   }
 };
+
+//download data after getting data from mongodb and formatting
 module.exports.downloadCSV = async function (req, res) {
   try {
     const studentDetails = await Student.find({}).populate("interviews");
@@ -129,6 +131,7 @@ module.exports.downloadCSV = async function (req, res) {
     return res.download("reports/student_details.csv");
   } catch (error) {
     console.log(`Error in downloading file: ${error}`);
+    req.flash("error", "error while downloading");
     return res.redirect("back");
   }
 };

@@ -1,13 +1,16 @@
 const { Student, Interview } = require("../models");
 const axios = require("axios");
 
+//render interview dashboard
 module.exports.viewDashboard = async function (req, res) {
   try {
     // populate all students
     const students = await Student.find({}).sort({ createdAt: -1 });
+    //get all interviews
     const interviews = await Interview.find({})
       .populate("student")
       .sort({ createdAt: -1 });
+    //check if both details are present
     if (!(students && interviews))
       req.flash("error", "error while getting details");
 
@@ -23,7 +26,9 @@ module.exports.viewDashboard = async function (req, res) {
   }
 };
 
+//add interview
 module.exports.addInterview = async function (req, res) {
+  //check if all details present
   const { company, student, date } = req.body;
   if (!(company && student && date)) {
     req.flash("error", "please fill all details");
@@ -37,6 +42,7 @@ module.exports.addInterview = async function (req, res) {
     const isalreadyScheduled = studentDetails.interviews.find((int) => {
       return int.company === company && int.date === date;
     });
+    //if already interview schudeuled return back
     if (isalreadyScheduled) {
       req.flash(
         "error",
@@ -44,11 +50,14 @@ module.exports.addInterview = async function (req, res) {
       );
       return res.redirect("back");
     }
+
+    //create new interview
     const newInterview = await Interview.create(req.body);
     if (!newInterview) {
       req.flash("error", "cannot schudule inetrview , please try again");
       return res.redirect("back");
     }
+    //push new interview to student array
     const studentarr = await Student.findById(student);
     studentarr.interviews.push(newInterview._id);
     await studentarr.save();
@@ -60,6 +69,8 @@ module.exports.addInterview = async function (req, res) {
     return res.end();
   }
 };
+
+//update interview status
 module.exports.updateStatus = async function (req, res) {
   const { status, interview: interviewID } = req.body;
   if (!(status && interviewID)) {
@@ -67,12 +78,13 @@ module.exports.updateStatus = async function (req, res) {
     return res.redirect("back");
   }
   try {
-    //Add student in DB
+    //find interview detials
     const interviewDetails = await Interview.findById(interviewID);
     if (!interviewDetails) {
       req.flash("error", "cannot find clicked interview");
       return res.redirect("back");
     }
+    //change status and save
     interviewDetails.result = status;
     await interviewDetails.save();
     req.flash("success", "Status updated");
@@ -84,6 +96,7 @@ module.exports.updateStatus = async function (req, res) {
   }
 };
 
+//render individual company and list of students applied for it
 module.exports.companyDashboard = async function (req, res) {
   const { companyName } = req.params;
   if (!companyName) {
@@ -113,6 +126,7 @@ module.exports.companyDashboard = async function (req, res) {
   }
 };
 
+//for external jobs getting data from api and rendering
 module.exports.externalJobs = async function (req, res) {
   try {
     const response = await axios.get(

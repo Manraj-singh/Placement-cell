@@ -20,7 +20,6 @@ module.exports.addStudent = async function (req, res) {
 module.exports.removeStudent = async function (req, res) {
   const { studentID } = req.body;
   try {
-    //Add student in DB
     const student = await Student.findByIdAndDelete(studentID);
     if (!student) {
       req.flash("error", "cannot delete , please try again");

@@ -10,8 +10,9 @@ const { studentRegisterPrechecks } = require("../middlewares");
 //   employeeController.viewDashboard
 // );
 
-//for registering employee , does prechecks in custom middle ware
+//for adding new student
 router.post("/add", studentRegisterPrechecks, studentController.addStudent);
+//removing a student
 router.post("/remove", studentController.removeStudent);
 
 module.exports = router;
