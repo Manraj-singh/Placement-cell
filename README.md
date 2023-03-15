@@ -1,4 +1,4 @@
-# Employee-review-system using NodeJS
+# Placement cell app using NodeJS
 
 ## Tech Stack
 
