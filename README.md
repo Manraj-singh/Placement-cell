@@ -64,6 +64,13 @@ alternatively , download the code zip file
 Open [http://localhost:8000](http://localhost:8000) to view it in your browser.
 NOTE: PORT is defined on root index.js file .
 
+
+
+## Refs:
+how to export mongodb collection to csv
+```
+https://www.bezkoder.com/node-js-export-mongodb-csv-file/#:~:text=2019%2D09%2D09-,Export%20MongoDB%20data%20to%20CSV%20file%20using%20fs,the%20command%3A%20npm%20install%20json2csv%20.
+```
 ## Folder Structure
 
 ```
