@@ -111,24 +111,29 @@ module.exports.downloadCSV = async function (req, res) {
             "\n" +
             ",,,,,,,,,";
         }
-      }
-      no++;
-      if (student.interviews.length > 1) {
         data = data.substring(0, data.length - 9).trimEnd();
       }
+      no++;
+
       csv += "\n" + data;
     }
 
-    fs.writeFile("reports/student_details.csv", csv, function (error, data) {
-      if (error) {
-        console.log(error);
-        req.flash("error", "please check if file is open elseware");
-        return res.redirect("back");
+    await fs.writeFile(
+      "reports/student_details.csv",
+      csv,
+      function (error, data) {
+        if (error) {
+          console.log(error);
+          req.flash("error", "please check if file is open elseware");
+          return res.redirect("back");
+        }
       }
-    });
-    // req.flash("success", "report downloaded in report folder");
-    // return res.redirect("back");
-    return res.download("reports/student_details.csv");
+    );
+
+    let rs = fs.createReadStream("reports/student_details.csv");
+
+    res.attachment("students.csv");
+    rs.pipe(res);
   } catch (error) {
     console.log(`Error in downloading file: ${error}`);
     req.flash("error", "error while downloading");
